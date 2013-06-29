@@ -25,6 +25,251 @@
     
     t = [self convertLunarToSun:5 month:5 year:t.year timeZone:[self getLocalTimeZoneNumber]];
     NSLog(@"Sun day : %d %d %d", t.day, t.month, t.year);
+    
+    t = [self getToday];
+    NSLog(@"Today : %d %d %d", t.day, t.month, t.year);
+}
+
+- (int) getYearWeekBy:(NSDate*)date
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"w"];
+    int d = [[df stringFromDate:date] intValue];
+    [df release];
+    
+    return d;
+}
+
+- (int) getYearWeekBy:(int)day month:(int)month year:(int)year
+{
+    return [self getYearWeekBy:[self getDateTimeBy:day month:month year:year hour:0 minute:0 second:0]];
+}
+
+- (int) getYearDayBy:(NSDate *)date
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"D"];
+    int d = [[df stringFromDate:date] intValue];
+    [df release];
+    
+    return d;
+}
+
+- (int) getYearDayBy:(int)day month:(int)month year:(int)year
+{
+    return [self getYearDayBy:[self getDateTimeBy:day month:month year:year hour:0 minute:0 second:0]];
+}
+
+- (int) getMonthWeekBy:(NSDate *)date
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"W"];
+    int d = [[df stringFromDate:date] intValue];
+    [df release];
+    
+    return d;
+}
+
+- (int) getMonthWeekBy:(int)day month:(int)month year:(int)year
+{
+    return [self getMonthWeekBy:[self getDateTimeBy:day month:month year:year hour:0 minute:0 second:0]];
+}
+
+- (int) getWeekDayBy:(NSDate*)date
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"c"];
+    int d = [[df stringFromDate:date] intValue];
+    [df release];
+    
+    return d;
+}
+
+- (int) getWeekDayBy:(int)day month:(int)month year:(int)year
+{
+    return [self getWeekDayBy:[self getDateTimeBy:day month:month year:year hour:0 minute:0 second:0]];
+}
+
+- (NSDate*) getDateTimeBy:(int)day month:(int)month year:(int)year hour:(int)hour minute:(int)minute second:(int)second
+{
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setDateFormat:@"dd:MM:yyyy - hh:mm:ss"];
+    NSDate *d = [df dateFromString:[NSString stringWithFormat:@"%d:%d:%d - %d:%d:%d", day, month, year, hour, minute, second]];
+    [df release];
+    
+    return d;
+}
+
+- (int) getNumberDayOfMonth:(int)month;
+{
+    if((month == 2) || (month == 4) || (month == 6) || (month == 9) || (month == 11))
+    {
+        return 30;
+    }
+    
+    return 31;
+}
+
+- (TimeSL) addSomeDaysTo:(TimeSL)day addDays:(int)addDays
+{
+    return [self addSomeDaysTo:day.day month:day.month year:day.year addDays:addDays];
+}
+
+- (TimeSL) addSomeDaysTo:(int)day month:(int)month year:(int)year addDays:(int)addDays
+{
+    TimeSL t = {day+addDays, month, year};
+    
+    if(addDays != 0)
+    {
+        if(addDays > 0)
+        {
+            int numDayInMonth = [self getNumberDayOfMonth:t.month];
+            while(t.day > numDayInMonth)
+            {
+                t.month++;
+                if(t.month > 12)
+                {
+                    t.month -= 12;
+                    t.year++;
+                }
+                
+                t.day -= numDayInMonth;
+                numDayInMonth = [self getNumberDayOfMonth:t.month];
+            }
+        }
+        else
+        {
+            while(t.day < 1)
+            {
+                t.month--;
+                if(t.month < 1)
+                {
+                    t.year--;
+                    t.month = 12;
+                }
+                
+                int numberInMonth = [self getNumberDayOfMonth:t.month];
+                t.day += numberInMonth;
+            }
+        }
+    }
+    
+    return t;
+}
+
+- (TimeSL) addSomeMonthsTo:(TimeSL)day addMonths:(int)addMonths
+{
+    TimeSL t = day;
+    int ads = addMonths;
+    
+    if(ads != 0)
+    {
+        if(ads > 0)
+        {
+            t.month += ads;
+            t.year += (t.month-1)/12;
+            t.month = ((t.month-1)%12)+1;
+        }
+        else
+        {
+            ads = -ads;
+            int dYear = (ads-1)/12;
+            ads = ads-dYear*12;
+            t.month += (12-ads);
+        }
+    }
+    
+    return t;
+}
+
+- (TimeSL) addSomeMonthsTo:(int)month year:(int)year addMonths:(int)addMonths
+{
+    TimeSL t = {1, month, year};
+    return [self addSomeMonthsTo:t addMonths:addMonths];
+}
+
+- (TimeSL) getNextDayBy:(NSDate *)date
+{
+    TimeSL t = [self getDateComponentsBy:date];
+    return [self getNextDayBy:t.day month:t.month year:t.year];
+}
+
+- (TimeSL) getNextDayBy:(int)day month:(int)month year:(int)year
+{
+    TimeSL t = {++day, month, year};
+    
+    int numDayInMonth = [self getNumberDayOfMonth:t.month];
+    if(t.day > numDayInMonth)
+    {
+        t.day -= numDayInMonth;
+        t.month++;
+    }
+    
+    if(t.month > 12)
+    {
+        t.month -= 12;
+        t.year++;
+    }
+    
+    return t;
+}
+
+- (TimeSL) getPreviousDayBy:(NSDate *)date
+{
+    TimeSL t = [self getDateComponentsBy:date];
+    return [self getPreviousDayBy:t.day month:t.month year:t.year];
+}
+
+- (TimeSL) getPreviousDayBy:(int)day month:(int)month year:(int)year
+{
+    TimeSL t = {--day, month, year};
+    
+    if(t.day <= 0)
+    {
+        t.day = [self getNumberDayOfMonth:--t.month];
+        
+        if(t.month <= 0)
+        {
+            t.month = 12;
+            t.year--;
+        }
+    }
+    
+    return t;
+}
+
+- (TimeSL) getLunarNextDay:(int)day month:(int)month year:(int)year
+{
+    TimeSL sDay = [self convertLunarToSun:day month:month year:YES timeZone:[self getLocalTimeZoneNumber]];
+    TimeSL sNextDay = [self getNextDayBy:sDay.day month:sDay.month year:sDay.year];
+    return [self convertSunToLunar:sNextDay.day month:sNextDay.month year:sNextDay.year timeZone:[self getLocalTimeZoneNumber]];
+}
+
+- (TimeSL) getLunarPreviousDay:(int)day month:(int)month year:(int)year
+{
+    TimeSL sDay = [self convertLunarToSun:day month:month year:YES timeZone:[self getLocalTimeZoneNumber]];
+    TimeSL sNextDay = [self getPreviousDayBy:sDay.day month:sDay.month year:sDay.year];
+    return [self convertSunToLunar:sNextDay.day month:sNextDay.month year:sNextDay.year timeZone:[self getLocalTimeZoneNumber]];
+}
+
+- (TimeSL) getToday
+{
+    return [self getDateComponentsBy:[NSDate date]];
+}
+
+- (TimeSL) getDateComponentsBy:(NSDate*)date
+{
+    NSDate *d = [NSDate date];
+    
+    NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setTimeZone:[NSTimeZone systemTimeZone]];
+    [df setDateFormat:@"dd:MM:yyyy"];
+    
+    NSString *str = [df stringFromDate:d];
+    NSArray *ar = [str componentsSeparatedByString:@":"];
+    
+    TimeSL t = {[[ar objectAtIndex:0] intValue], [[ar objectAtIndex:1] intValue], [[ar objectAtIndex:2] intValue]};
+    return t;
 }
 
 - (int) getLocalTimeZoneNumber
@@ -61,7 +306,7 @@
     long long a, b, c, d, e, m, day, month, year;
     
     if (jd > 2299160)
-    { // After 5/10/1582, Gregorian calendar
+    { // After 5/10/1582, Gregorian calendarr
         a = jd + 32044;
         b = (int)((4*a+3)/146097);
         c = a - (int)((b*146097)/4);
@@ -79,7 +324,7 @@
     month = m + 3 - 12*(int)(m/10);
     year = b*100 + d - 4800 + (int)(m/10);
     
-    TimeSL t = {day=(int)day, month=(int)month, year=(int)year};
+    TimeSL t = {(int)day, (int)month, (int)year};
     return t;
 }
 
@@ -171,6 +416,11 @@
     return i-1;
 }
 
+- (TimeSL) convertSunToLunar:(TimeSL)date timeZone:(int)timeZone
+{
+    return [self convertSunToLunar:date.day month:date.month year:date.year timeZone:timeZone];
+}
+
 - (TimeSL) convertSunToLunar:(int)day month:(int)month year:(int)year timeZone:(int)timeZone
 {
     CGFloat k, dayNumber, monthStart, a11, b11, lunarDay, lunarMonth, lunarYear, lunarLeap;
@@ -224,8 +474,13 @@
         lunarYear -= 1;
     }
     
-    TimeSL t = {day=(int)lunarDay, month=(int)lunarMonth, year=(int)lunarYear};
+    TimeSL t = {(int)lunarDay, (int)lunarMonth, (int)lunarYear};
     return t;
+}
+
+- (TimeSL) convertLunarToSun:(TimeSL)date timeZone:(int)timeZone
+{
+    return [self convertLunarToSun:date.day month:date.month year:date.year timeZone:timeZone];
 }
 
 - (TimeSL) convertLunarToSun:(int)day month:(int)month year:(int)year timeZone:(int)timeZone
