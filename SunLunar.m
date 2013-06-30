@@ -23,11 +23,35 @@
     TimeSL t = [self convertSunToLunar:29 month:6 year:2013 timeZone:[self getLocalTimeZoneNumber]];
     NSLog(@"Lunar day : %d %d %d", t.day, t.month, t.year);
     
-    t = [self convertLunarToSun:5 month:5 year:t.year timeZone:[self getLocalTimeZoneNumber]];
+    t = [self convertLunarToSun:5 month:5 year:t.year lunarLeap:1 timeZone:[self getLocalTimeZoneNumber]];
     NSLog(@"Sun day : %d %d %d", t.day, t.month, t.year);
     
     t = [self getToday];
     NSLog(@"Today : %d %d %d", t.day, t.month, t.year);
+    
+    for(int i=1; i<37; i++)
+    {
+        t = [self addSomeMonthsTo:10 year:2013 addMonths:i];
+        NSLog(@"Add Months %d, %d/%d", i, t.month, t.year);
+    }
+    
+    for(int i=1; i<37; i++)
+    {
+        t = [self addSomeMonthsTo:10 year:2013 addMonths:-i];
+        NSLog(@"Subtract Months %d, %d/%d", i, t.month, t.year);
+    }
+    
+    for(int i=1; i<367; i++)
+    {
+        t = [self addSomeDaysTo:1 month:11 year:2013 addDays:i];
+        NSLog(@"Add days %d, %d/%d/%d", i, t.day, t.month, t.year);
+    }
+    
+    for(int i=1; i<367; i++)
+    {
+        t = [self addSomeDaysTo:1 month:11 year:2013 addDays:i];
+        NSLog(@"Subtract days %d, %d/%d/%d", i, t.day, t.month, t.year);
+    }
 }
 
 - (int) getYearWeekBy:(NSDate*)date
@@ -100,11 +124,20 @@
     return d;
 }
 
-- (int) getNumberDayOfMonth:(int)month;
+- (int) getNumberDayOfMonth:(int)month year:(int)year;
 {
-    if((month == 2) || (month == 4) || (month == 6) || (month == 9) || (month == 11))
+    if((month == 4) || (month == 6) || (month == 9) || (month == 11))
     {
         return 30;
+    }
+    else if(month == 2)
+    {
+        if(year%4)
+        {
+            return 28;
+        }
+        
+        return 29;
     }
     
     return 31;
@@ -123,7 +156,7 @@
     {
         if(addDays > 0)
         {
-            int numDayInMonth = [self getNumberDayOfMonth:t.month];
+            int numDayInMonth = [self getNumberDayOfMonth:t.month year:t.year];
             while(t.day > numDayInMonth)
             {
                 t.month++;
@@ -134,7 +167,7 @@
                 }
                 
                 t.day -= numDayInMonth;
-                numDayInMonth = [self getNumberDayOfMonth:t.month];
+                numDayInMonth = [self getNumberDayOfMonth:t.month year:t.year];
             }
         }
         else
@@ -148,7 +181,7 @@
                     t.month = 12;
                 }
                 
-                int numberInMonth = [self getNumberDayOfMonth:t.month];
+                int numberInMonth = [self getNumberDayOfMonth:t.month year:t.year];
                 t.day += numberInMonth;
             }
         }
@@ -172,10 +205,13 @@
         }
         else
         {
-            ads = -ads;
-            int dYear = (ads-1)/12;
-            ads = ads-dYear*12;
-            t.month += (12-ads);
+            t.month += ads;
+            
+            if(t.month < 1)
+            {
+                t.year += (t.month/12 - 1);
+                t.month = 12 + t.month%12;
+            }
         }
     }
     
@@ -198,7 +234,7 @@
 {
     TimeSL t = {++day, month, year};
     
-    int numDayInMonth = [self getNumberDayOfMonth:t.month];
+    int numDayInMonth = [self getNumberDayOfMonth:t.month year:t.year];
     if(t.day > numDayInMonth)
     {
         t.day -= numDayInMonth;
@@ -226,7 +262,8 @@
     
     if(t.day <= 0)
     {
-        t.day = [self getNumberDayOfMonth:--t.month];
+        t = [self addSomeMonthsTo:t addMonths:-1];
+        t.day = [self getNumberDayOfMonth:t.month year:t.year];
         
         if(t.month <= 0)
         {
@@ -240,14 +277,14 @@
 
 - (TimeSL) getLunarNextDay:(int)day month:(int)month year:(int)year
 {
-    TimeSL sDay = [self convertLunarToSun:day month:month year:YES timeZone:[self getLocalTimeZoneNumber]];
+    TimeSL sDay = [self convertLunarToSun:day month:month year:YES lunarLeap:1 timeZone:[self getLocalTimeZoneNumber]];
     TimeSL sNextDay = [self getNextDayBy:sDay.day month:sDay.month year:sDay.year];
     return [self convertSunToLunar:sNextDay.day month:sNextDay.month year:sNextDay.year timeZone:[self getLocalTimeZoneNumber]];
 }
 
 - (TimeSL) getLunarPreviousDay:(int)day month:(int)month year:(int)year
 {
-    TimeSL sDay = [self convertLunarToSun:day month:month year:YES timeZone:[self getLocalTimeZoneNumber]];
+    TimeSL sDay = [self convertLunarToSun:day month:month year:YES lunarLeap:1 timeZone:[self getLocalTimeZoneNumber]];
     TimeSL sNextDay = [self getPreviousDayBy:sDay.day month:sDay.month year:sDay.year];
     return [self convertSunToLunar:sNextDay.day month:sNextDay.month year:sNextDay.year timeZone:[self getLocalTimeZoneNumber]];
 }
@@ -330,7 +367,7 @@
 
 - (int) getNewMoonDay:(CGFloat)k timeZone:(int)timeZone
 {
-    CGFloat T, T2, T3, dr, Jd1, M, Mpr, F, C1, deltat, JdNew;
+    double T, T2, T3, dr, Jd1, M, Mpr, F, C1, deltat, JdNew;
     
     T = k/1236.85; // Time in Julian centuries from 1900 January 0.5
     T2 = T * T;
@@ -360,14 +397,14 @@
     
     JdNew = Jd1 + C1 - deltat;
     
-    return (int)(JdNew + 0.5 + timeZone/24);
+    return (int)(JdNew + 0.5 + timeZone/24.0);
 }
 
 - (int) getSunLongitude:(CGFloat)jdn timeZone:(int)timeZone
 {
     CGFloat T, T2, dr, M, L0, DL, L;
     
-    T = (jdn - 2451545.5 - timeZone/24) / 36525; // Time in Julian centuries from 2000-01-01 12:00:00 GMT
+    T = (jdn - 2451545.5 - timeZone/24.0) / 36525; // Time in Julian centuries from 2000-01-01 12:00:00 GMT
     T2 = T*T;
     dr = M_PI/180; // degree to radian
     M = 357.52910 + 35999.05030*T - 0.0001559*T2 - 0.00000048*T*T2; // mean anomaly, degree
@@ -416,6 +453,48 @@
     return i-1;
 }
 
+
+- (int) getLunarLeapFromSunDate:(int)day month:(int)month year:(int)year timeZone:(int)timeZone
+{
+    CGFloat k, dayNumber, monthStart, a11, b11, lunarLeap;
+    
+    dayNumber = [self jdFromDate:day month:month year:year];
+    
+    k = (int)((dayNumber - 2415021.076998695) / 29.530588853);
+    monthStart = [self getNewMoonDay:k+1 timeZone:timeZone];
+    if (monthStart > dayNumber)
+    {
+        monthStart = [self getNewMoonDay:k timeZone:timeZone];
+    }
+    
+    a11 = [self getLunarMonth11:year timeZone:timeZone];
+    b11 = a11;
+    if (a11 >= monthStart)
+    {
+        a11 = [self getLunarMonth11:year-1 timeZone:timeZone];
+    }
+    else
+    {
+        b11 = [self getLunarMonth11:year+1 timeZone:timeZone];
+    }
+    
+    lunarLeap = 0;
+    int diff = (int)((monthStart - a11)/29);
+    if (b11 - a11 > 365)
+    {
+        CGFloat leapMonthDiff = [self getLeapMonthOffset:a11 timeZone:timeZone];
+        if (diff >= leapMonthDiff)
+        {
+            if (diff == leapMonthDiff)
+            {
+                lunarLeap = 1;
+            }
+        }
+    }
+    
+    return lunarLeap;
+}
+
 - (TimeSL) convertSunToLunar:(TimeSL)date timeZone:(int)timeZone
 {
     return [self convertSunToLunar:date.day month:date.month year:date.year timeZone:timeZone];
@@ -423,11 +502,13 @@
 
 - (TimeSL) convertSunToLunar:(int)day month:(int)month year:(int)year timeZone:(int)timeZone
 {
-    CGFloat k, dayNumber, monthStart, a11, b11, lunarDay, lunarMonth, lunarYear, lunarLeap;
+
+    int k, dayNumber, monthStart, a11, b11, lunarDay, lunarMonth, lunarYear, lunarLeap;
     
     dayNumber = [self jdFromDate:day month:month year:year];
     
     k = (int)((dayNumber - 2415021.076998695) / 29.530588853);
+    
     monthStart = [self getNewMoonDay:k+1 timeZone:timeZone];
     if (monthStart > dayNumber)
     {
@@ -480,10 +561,10 @@
 
 - (TimeSL) convertLunarToSun:(TimeSL)date timeZone:(int)timeZone
 {
-    return [self convertLunarToSun:date.day month:date.month year:date.year timeZone:timeZone];
+    return [self convertLunarToSun:date.day month:date.month year:date.year lunarLeap:1 timeZone:timeZone];
 }
 
-- (TimeSL) convertLunarToSun:(int)day month:(int)month year:(int)year timeZone:(int)timeZone
+- (TimeSL) convertLunarToSun:(int)day month:(int)month year:(int)year lunarLeap:(int)lunarLeap timeZone:(int)timeZone
 {
     
     CGFloat k, a11, b11, off, leapOff, leapMonth, monthStart;
@@ -514,12 +595,12 @@
 			leapMonth += 12;
 		}
         
-		if (month != leapMonth)
+		if ((lunarLeap != 0) && (month != leapMonth))
         {
             TimeSL t = {0,0,0};
 			return t;
 		}
-        else if (off >= leapOff)
+        else if ((lunarLeap != 0) && (off >= leapOff))
         {
 			off += 1;
 		}

@@ -27,7 +27,7 @@ typedef struct
 - (TimeSL) convertLunarToSun:(TimeSL)date timeZone:(int)timeZone;
 
 // Convert Lunar to Sun calendar
-- (TimeSL) convertLunarToSun:(int)day month:(int)month year:(int)year timeZone:(int)timeZone;
+- (TimeSL) convertLunarToSun:(int)day month:(int)month year:(int)year lunarLeap:(int)lunarLeap timeZone:(int)timeZone;
 
 // Get Date Components
 - (TimeSL) getDateComponentsBy:(NSDate*)date;
@@ -48,7 +48,7 @@ typedef struct
 - (TimeSL) getNextDayBy:(int)day month:(int)month year:(int)year;
 
 // Get count day of a Month
-- (int) getNumberDayOfMonth:(int)month;
+- (int) getNumberDayOfMonth:(int)month year:(int)year;
 
 // get NSDate by Time separated numbers
 - (NSDate*) getDateTimeBy:(int)day month:(int)month year:(int)year hour:(int)hour minute:(int)minute second:(int)second;
