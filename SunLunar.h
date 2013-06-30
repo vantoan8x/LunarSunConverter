@@ -98,4 +98,7 @@ typedef struct
 // Get Lunar Previous Day from Lunar day
 - (TimeSL) getLunarPreviousDay:(int)day month:(int)month year:(int)year;
 
+// Get Leap From Sun Date
+- (int) getLunarLeapFromSunDate:(int)day month:(int)month year:(int)year timeZone:(int)timeZone;
+
 @end

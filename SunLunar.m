@@ -322,9 +322,9 @@
     return tz;
 }
 
-- (int) jdFromDate:(int)day month:(int)month year:(int)year
+- (long) jdFromDate:(int)day month:(int)month year:(int)year
 {
-    int a, y, m, jd;
+    long a, y, m, jd;
     
     a = ((14 - month) / 12);
     y = year + 4800 - a;
@@ -338,15 +338,15 @@
     return jd;
 }
 
-- (TimeSL)jdToDate:(long long)jd
+- (TimeSL)jdToDate:(long)jd
 {
-    long long a, b, c, d, e, m, day, month, year;
+    long a, b, c, d, e, m, day, month, year;
     
     if (jd > 2299160)
     { // After 5/10/1582, Gregorian calendarr
         a = jd + 32044;
-        b = (int)((4*a+3)/146097);
-        c = a - (int)((b*146097)/4);
+        b = (int)((4*a+3)/146097.0);
+        c = a - (int)((b*146097)/4.0);
     }
     else
     {
@@ -402,7 +402,7 @@
 
 - (int) getSunLongitude:(CGFloat)jdn timeZone:(int)timeZone
 {
-    CGFloat T, T2, dr, M, L0, DL, L;
+    double T, T2, dr, M, L0, DL, L;
     
     T = (jdn - 2451545.5 - timeZone/24.0) / 36525; // Time in Julian centuries from 2000-01-01 12:00:00 GMT
     T2 = T*T;
@@ -456,7 +456,7 @@
 
 - (int) getLunarLeapFromSunDate:(int)day month:(int)month year:(int)year timeZone:(int)timeZone
 {
-    CGFloat k, dayNumber, monthStart, a11, b11, lunarLeap;
+    long k, dayNumber, monthStart, a11, b11, lunarLeap;
     
     dayNumber = [self jdFromDate:day month:month year:year];
     
@@ -492,7 +492,7 @@
         }
     }
     
-    return lunarLeap;
+    return (int)lunarLeap;
 }
 
 - (TimeSL) convertSunToLunar:(TimeSL)date timeZone:(int)timeZone
@@ -503,7 +503,7 @@
 - (TimeSL) convertSunToLunar:(int)day month:(int)month year:(int)year timeZone:(int)timeZone
 {
 
-    int k, dayNumber, monthStart, a11, b11, lunarDay, lunarMonth, lunarYear, lunarLeap;
+    long k, dayNumber, monthStart, a11, b11, lunarDay, lunarMonth, lunarYear, lunarLeap;
     
     dayNumber = [self jdFromDate:day month:month year:year];
     
@@ -567,7 +567,7 @@
 - (TimeSL) convertLunarToSun:(int)day month:(int)month year:(int)year lunarLeap:(int)lunarLeap timeZone:(int)timeZone
 {
     
-    CGFloat k, a11, b11, off, leapOff, leapMonth, monthStart;
+    long k, a11, b11, off, leapOff, leapMonth, monthStart;
 	if (month < 11)
     {
 		a11 = [self getLunarMonth11:year-1 timeZone:timeZone];
