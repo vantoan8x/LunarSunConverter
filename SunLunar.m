@@ -57,6 +57,7 @@
 - (int) getYearWeekBy:(NSDate*)date
 {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"w"];
     int d = [[df stringFromDate:date] intValue];
     [df release];
@@ -72,6 +73,7 @@
 - (int) getYearDayBy:(NSDate *)date
 {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"D"];
     int d = [[df stringFromDate:date] intValue];
     [df release];
@@ -87,6 +89,7 @@
 - (int) getMonthWeekBy:(NSDate *)date
 {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"W"];
     int d = [[df stringFromDate:date] intValue];
     [df release];
@@ -102,6 +105,7 @@
 - (int) getWeekDayBy:(NSDate*)date
 {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"c"];
     int d = [[df stringFromDate:date] intValue];
     [df release];
@@ -117,6 +121,7 @@
 - (NSDate*) getDateTimeBy:(int)day month:(int)month year:(int)year hour:(int)hour minute:(int)minute second:(int)second
 {
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
+    [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"dd:MM:yyyy - hh:mm:ss"];
     NSDate *d = [df dateFromString:[NSString stringWithFormat:@"%d:%d:%d - %d:%d:%d", day, month, year, hour, minute, second]];
     [df release];
@@ -296,13 +301,11 @@
 
 - (TimeSL) getDateComponentsBy:(NSDate*)date
 {
-    NSDate *d = [NSDate date];
-    
     NSDateFormatter *df = [[NSDateFormatter alloc] init];
     [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"dd:MM:yyyy"];
     
-    NSString *str = [df stringFromDate:d];
+    NSString *str = [df stringFromDate:date];
     NSArray *ar = [str componentsSeparatedByString:@":"];
     
     TimeSL t = {[[ar objectAtIndex:0] intValue], [[ar objectAtIndex:1] intValue], [[ar objectAtIndex:2] intValue]};
