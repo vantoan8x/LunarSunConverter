@@ -60,7 +60,6 @@
     [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"w"];
     int d = [[df stringFromDate:date] intValue];
-    [df release];
     
     return d;
 }
@@ -76,7 +75,6 @@
     [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"D"];
     int d = [[df stringFromDate:date] intValue];
-    [df release];
     
     return d;
 }
@@ -92,7 +90,6 @@
     [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"W"];
     int d = [[df stringFromDate:date] intValue];
-    [df release];
     
     return d;
 }
@@ -108,7 +105,6 @@
     [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"c"];
     int d = [[df stringFromDate:date] intValue];
-    [df release];
     
     return d;
 }
@@ -124,7 +120,6 @@
     [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"dd:MM:yyyy - hh:mm:ss"];
     NSDate *d = [df dateFromString:[NSString stringWithFormat:@"%d:%d:%d - %d:%d:%d", day, month, year, hour, minute, second]];
-    [df release];
     
     return d;
 }
@@ -320,7 +315,6 @@
     [df setTimeZone:[NSTimeZone systemTimeZone]];
     [df setDateFormat:@"Z"];
     int tz = [[[df stringFromDate:d] stringByReplacingOccurrencesOfString:@"0" withString:@""] intValue];
-    [df release];
     
     return tz;
 }
