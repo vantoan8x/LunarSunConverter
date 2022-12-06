@@ -12,7 +12,9 @@
 		E50ED254293CC14500679B9D /* LunarSunConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50ED253293CC14500679B9D /* LunarSunConverterTests.swift */; };
 		E50ED255293CC14500679B9D /* LunarSunConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = E50ED247293CC14400679B9D /* LunarSunConverter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E50ED264293CC16E00679B9D /* SunLunar.m in Sources */ = {isa = PBXBuildFile; fileRef = E50ED262293CC16D00679B9D /* SunLunar.m */; };
-		E50ED265293CC16E00679B9D /* SunLunar.h in Headers */ = {isa = PBXBuildFile; fileRef = E50ED263293CC16D00679B9D /* SunLunar.h */; };
+		E50ED265293CC16E00679B9D /* SunLunar.h in Headers */ = {isa = PBXBuildFile; fileRef = E50ED263293CC16D00679B9D /* SunLunar.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E50ED26C293F665700679B9D /* KoreanLunarCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50ED26B293F665700679B9D /* KoreanLunarCalendar.swift */; };
+		E50ED26D293F7A6800679B9D /* KoreanLunarCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E50ED26B293F665700679B9D /* KoreanLunarCalendar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +35,7 @@
 		E50ED253293CC14500679B9D /* LunarSunConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LunarSunConverterTests.swift; sourceTree = "<group>"; };
 		E50ED262293CC16D00679B9D /* SunLunar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SunLunar.m; sourceTree = "<group>"; };
 		E50ED263293CC16D00679B9D /* SunLunar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SunLunar.h; sourceTree = "<group>"; };
+		E50ED26B293F665700679B9D /* KoreanLunarCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KoreanLunarCalendar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +81,7 @@
 				E50ED247293CC14400679B9D /* LunarSunConverter.h */,
 				E50ED263293CC16D00679B9D /* SunLunar.h */,
 				E50ED262293CC16D00679B9D /* SunLunar.m */,
+				E50ED26B293F665700679B9D /* KoreanLunarCalendar.swift */,
 				E50ED248293CC14400679B9D /* LunarSunConverter.docc */,
 			);
 			path = LunarSunConverter;
@@ -120,6 +124,8 @@
 			dependencies = (
 			);
 			name = LunarSunConverter;
+			packageProductDependencies = (
+			);
 			productName = LunarSunConverter;
 			productReference = E50ED244293CC14400679B9D /* LunarSunConverter.framework */;
 			productType = "com.apple.product-type.framework";
@@ -154,6 +160,7 @@
 				TargetAttributes = {
 					E50ED243293CC14400679B9D = {
 						CreatedOnToolsVersion = 14.1;
+						LastSwiftMigration = 1410;
 					};
 					E50ED24D293CC14500679B9D = {
 						CreatedOnToolsVersion = 14.1;
@@ -169,6 +176,8 @@
 				Base,
 			);
 			mainGroup = E50ED23A293CC14400679B9D;
+			packageReferences = (
+			);
 			productRefGroup = E50ED245293CC14400679B9D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -201,6 +210,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E50ED26C293F665700679B9D /* KoreanLunarCalendar.swift in Sources */,
 				E50ED249293CC14400679B9D /* LunarSunConverter.docc in Sources */,
 				E50ED264293CC16E00679B9D /* SunLunar.m in Sources */,
 			);
@@ -210,6 +220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E50ED26D293F7A6800679B9D /* KoreanLunarCalendar.swift in Sources */,
 				E50ED254293CC14500679B9D /* LunarSunConverterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,6 +287,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -331,6 +343,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -343,6 +356,7 @@
 		E50ED259293CC14500679B9D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -370,6 +384,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -378,6 +393,7 @@
 		E50ED25A293CC14500679B9D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -413,6 +429,7 @@
 		E50ED25C293CC14500679B9D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Y7YQUS95SK;
@@ -433,6 +450,7 @@
 		E50ED25D293CC14500679B9D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = Y7YQUS95SK;
